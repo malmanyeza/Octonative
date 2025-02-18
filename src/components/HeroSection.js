@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import backgroundImage from "../assets/pawel-czerwinski-4-Lo8Pkxs_s-unsplash.jpg";
 
 const HeroSection = () => {
@@ -10,11 +10,9 @@ const HeroSection = () => {
     const input = e.target.elements.message.value.trim();
     if (!input) return;
 
-    // Add user message
     const newMessages = [...messages, { sender: "user", text: input }];
     setMessages(newMessages);
 
-    // Simulate AI response
     setTimeout(() => {
       setMessages([...newMessages, { sender: "ai", text: "Hello! How can I assist you?" }]);
     }, 1000);
@@ -23,7 +21,6 @@ const HeroSection = () => {
   };
 
   const handlePromptClick = (prompt) => {
-    // When a prompt is clicked, simulate sending that prompt
     const newMessages = [...messages, { sender: "user", text: prompt }];
     setMessages(newMessages);
     setTimeout(() => {
@@ -36,17 +33,21 @@ const HeroSection = () => {
       <ChatBox>
         <MessagesContainer>
           {messages.length === 0 ? (
-            <PromptsContainer>
-              <PromptCard onClick={() => handlePromptClick("What is Octonative? Learn about our mission, vision, and innovative digital solutions that drive transformation.")}>
-                What is Octonative? Learn about our mission, vision, and innovative digital solutions that drive transformation.
-              </PromptCard>
-              <PromptCard onClick={() => handlePromptClick("Tell me about your services. Discover our range of tech solutions and expert consulting to empower your business.")}>
-                Tell me about your services. Discover our range of tech solutions and expert consulting to empower your business.
-              </PromptCard>
-              <PromptCard onClick={() => handlePromptClick("How can I get started? Find out how to engage with our team and launch your digital journey.")}>
-                How can I get started? Find out how to engage with our team and launch your digital journey.
-              </PromptCard>
+            <>
+              <PromptsContainer>
+                <PromptCard onClick={() => handlePromptClick("Hey there! I'm your expert from Octonative. Want to know how we can transform your business with our cutting-edge solutions? 🚀💡")}>Hey there! I'm your expert from Octonative. Want to know how we can transform your business with our cutting-edge solutions? 🚀💡</PromptCard>
+                <PromptCard onClick={() => handlePromptClick("Curious about what we do? Let me walk you through our innovative services and how we help businesses grow effortlessly. 🤔📈")}>Curious about what we do? Let me walk you through our innovative services and how we help businesses grow effortlessly. 🤔📈</PromptCard>
+                <PromptCard onClick={() => handlePromptClick("You're in the right place! Let's chat about your ideas, and I'll show you how Octonative can bring them to life. 💬✨")}>You're in the right place! Let's chat about your ideas, and I'll show you how Octonative can bring them to life. 💬✨</PromptCard>
             </PromptsContainer>
+
+              <Statement>
+                <i style={{ fontSize: "1.2rem" }}>
+                  "You dream it, we build it. Let’s turn your vision into reality with seamless digital solutions."
+                </i>
+              </Statement>
+
+
+            </>
           ) : (
             messages.map((msg, index) => (
               <Message key={index} sender={msg.sender}>
@@ -68,9 +69,13 @@ const HeroSection = () => {
 
 /* Styled Components */
 
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
 const ChatContainer = styled.section`
   min-height: 100vh;
-  box-sizing: border-box;
   padding-top: 80px;
   display: flex;
   flex-direction: column;
@@ -105,16 +110,16 @@ const PromptsContainer = styled.div`
   display: flex;
   gap: 15px;
   justify-content: center;
-  flex-wrap: nowrap; /* Arrange horizontally */
-  margin-top: 40px;  /* Position lower within the chatbox */
+  flex-wrap: nowrap;
+  margin-top: 40px;
 `;
 
 const PromptCard = styled.div`
   background: rgba(255, 255, 255, 0.2);
   width: 300px;
-  height: 150px;
+  height: 200px;
   padding: 15px 30px;
-  border: 1px solid rgba(255, 255, 255, 0.3); /* Very thin, faint border */
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 12px;
   font-size: 1rem;
   text-align: center;
@@ -123,22 +128,84 @@ const PromptCard = styled.div`
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
+  font-family: 'Sora', sans-serif; /* Applying Sora font */
   justify-content: center;
   &:hover {
     background: rgba(255, 255, 255, 0.4);
   }
 `;
 
-const Message = styled.div`
-  background: ${({ sender }) => (sender === "user" ? "#ff4081" : "#3c096c")};
+const Statement = styled.h2`
+  margin-top: 40px;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
   color: white;
-  padding: 12px 18px;
-  border-radius: 12px;
-  margin: 6px 0;
-  align-self: ${({ sender }) => (sender === "user" ? "flex-end" : "flex-start")};
-  max-width: 80%;
-  font-size: 1.1rem;
+  opacity: 0;
+  animation: ${fadeIn} 1.5s ease-in-out forwards;
+  font-family: 'Anton', sans-serif; /* Applying Anton font */
 `;
+
+const Message = styled.div`
+  display: flex;
+  flex-direction: ${({ sender }) => (sender === "user" ? "row" : "row-reverse")}; /* User starts from left, AI from right */
+  align-items: center;
+  margin: 6px 0;
+  padding: 12px;
+  border-radius: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.1rem;
+  align-self: ${({ sender }) => (sender === "user" ? "flex-end" : "flex-start")}; /* User aligned far right, AI aligned left */
+  max-width: ${({ sender }) => (sender === "user" ? "70%" : "100%")}; /* User's message has 70% width, AI spans 100% */
+
+  /* User message box styling */
+  ${({ sender }) =>
+    sender === "user" &&
+    `
+      background: transparent; /* Transparent background for user message */
+      color: black; /* Black text color for user */
+      border: 2px solid #ccc; /* Border for user message */
+      align-self: flex-end; /* Ensures the user's message is aligned to the far right */
+    `}
+  
+  /* AI message styling */
+  ${({ sender }) =>
+    sender === "ai" &&
+    `
+      background: none; /* No background for AI message */
+      color: white; /* White text for AI */
+      position: relative;
+      padding-left: 50px; /* Space for the vertical line */
+      &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 2px;
+        background: rgba(255, 255, 255, 0.3); /* Faint vertical line */
+        border-radius: 3px;
+      }
+    `}
+  
+  /* Avatar for AI message */
+  ${({ sender }) =>
+    sender === "ai" &&
+    `
+      .avatar {
+        width: 35px;
+        height: 35px;
+        top: -20px; /* Adjust avatar position */
+        left: 15px; /* Adjust avatar position */
+        background: url(${({ logo }) => logo || "default-logo.png"}) no-repeat center;
+        background-size: cover;
+      }
+    `}
+`;
+
+
+
 
 const ChatInput = styled.form`
   align-self: center;
@@ -150,13 +217,14 @@ const ChatInput = styled.form`
 const InputWrapper = styled.div`
   position: relative;
   flex: 1;
+  font-family: 'Poppins', sans-serif; /* Applying Poppins */
 `;
 
 const InputField = styled.input`
   width: 100%;
-  padding: 12px 50px 12px 12px; /* extra right padding for the icon */
+  padding: 12px 50px 12px 12px;
   border: none;
-  border-radius: 20px; /* increased border radius */
+  border-radius: 20px;
   font-size: 1.1rem;
   outline: none;
   background: rgba(255, 255, 255, 0.2);
@@ -173,10 +241,9 @@ const SendIcon = styled.button`
   transform: translateY(-50%);
   background: transparent;
   border: none;
-  color: #ff4081;
+  color:rgb(19, 210, 224);
   font-size: 1.5rem;
   cursor: pointer;
-  padding: 0;
   &:hover {
     color: white;
   }
